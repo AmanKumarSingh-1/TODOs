@@ -1,0 +1,417 @@
+:root {
+    --primary-color: #6c5ce7;
+    --secondary-color: #a29bfe;
+    --accent-color: #fd79a8;
+    --light-color: #f8f9fa;
+    --dark-color: #2d3436;
+    --success-color: #00b894;
+    --warning-color: #fdcb6e;
+    --danger-color: #d63031;
+    --border-radius: 12px;
+    --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #f5f6fa;
+    color: var(--dark-color);
+    line-height: 1.6;
+}
+
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.app-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--primary-color);
+}
+
+.app-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.app-header p {
+    color: var(--secondary-color);
+    font-weight: 300;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.calendar-container {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--box-shadow);
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.calendar-header button {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--primary-color);
+    transition: transform 0.2s;
+}
+
+.calendar-header button:hover {
+    transform: scale(1.1);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.day-header {
+    text-align: center;
+    font-weight: 500;
+    color: var(--primary-color);
+    padding: 0.5rem;
+}
+
+.calendar-day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    user-select: none;
+}
+
+.calendar-day:hover {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.calendar-day.today {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: bold;
+}
+
+.calendar-day.selected {
+    background-color: var(--accent-color);
+    color: white;
+    font-weight: bold;
+}
+
+.calendar-day.other-month {
+    color: #ccc;
+}
+
+.calendar-day.has-tasks::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    width: 6px;
+    height: 6px;
+    background-color: var(--success-color);
+    border-radius: 50%;
+}
+
+.calendar-day.drop-target {
+    background-color: rgba(162, 155, 254, 0.3);
+    border: 2px dashed var(--primary-color);
+}
+
+.tasks-container {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--box-shadow);
+}
+
+.tasks-header {
+    margin-bottom: 1.5rem;
+}
+
+.tasks-header h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.task-input-container {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.task-input-container input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: border 0.3s;
+}
+
+.task-input-container input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+.task-input-container button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    width: 45px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.task-input-container button:hover {
+    background-color: var(--secondary-color);
+}
+
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.task-item {
+    background-color: var(--light-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.2s;
+    cursor: grab;
+}
+
+.task-item:hover {
+    transform: translateX(5px);
+}
+
+.task-item.dragging {
+    opacity: 0.5;
+    background-color: var(--secondary-color);
+    border: 1px dashed var(--primary-color);
+    cursor: grabbing;
+}
+
+.task-text {
+    flex: 1;
+    word-break: break-word;
+}
+
+.task-item.completed .task-text {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.task-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    word-break: break-all;
+    transition: color 0.2s;
+}
+
+.task-link:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.task-text a {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.link-with-remarks {
+    display: flex;
+    flex-direction: column;
+}
+
+.link-remarks {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
+.task-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.task-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.task-actions button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.complete-btn {
+    color: var(--success-color);
+}
+
+.delete-btn {
+    color: var(--danger-color);
+}
+
+.move-date-btn {
+    color: var(--secondary-color);
+}
+
+.move-date-btn:hover {
+    color: var(--primary-color);
+}
+
+.link-preview {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    max-width: 100%;
+}
+
+.link-preview img {
+    max-width: 100%;
+    border-radius: 8px 8px 0 0;
+}
+
+.link-preview-content {
+    padding: 0.5rem;
+}
+
+.link-preview h4 {
+    margin: 0.5rem 0;
+    color: var(--primary-color);
+}
+
+.link-preview p {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    max-width: 600px;
+    width: 90%;
+    position: relative;
+}
+
+.close-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--dark-color);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--dark-color);
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+}
+
+#save-link-details {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+#save-link-details:hover {
+    background-color: var(--secondary-color);
+}
+
+.drag-ghost {
+    position: absolute;
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    box-shadow: var(--box-shadow);
+    z-index: 1000;
+    pointer-events: none;
+    max-width: 200px;
+    opacity: 0.8;
+}
+
+.no-tasks {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+}
