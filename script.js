@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const currentMonthYear = document.getElementById('current-month-year');
     const prevMonthBtn = document.getElementById('prev-month');
     const nextMonthBtn = document.getElementById('next-month');
+    const toggleHolidayBtn = document.getElementById('toggle-holiday');
     const selectedDateEl = document.getElementById('selected-date');
     const taskInput = document.getElementById('task-input');
     const addTaskBtn = document.getElementById('add-task-btn');
@@ -20,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentDate = new Date();
     let selectedDate = null;
     let tasks = JSON.parse(localStorage.getItem('tasks')) || {};
+    let holidays = JSON.parse(localStorage.getItem('holidays')) || {};
     let draggedTask = null;
     let dragGhost = null;
     let dragStartIndex;
@@ -32,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Event listeners
         prevMonthBtn.addEventListener('click', goToPreviousMonth);
         nextMonthBtn.addEventListener('click', goToNextMonth);
+        toggleHolidayBtn.addEventListener('click', toggleHoliday);
         addTaskBtn.addEventListener('click', addTask);
         taskInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') addTask();
@@ -125,6 +128,11 @@ document.addEventListener('DOMContentLoaded', function() {
             dayElement.classList.add('calendar-day');
             dayElement.textContent = i;
             
+            const dateKey = formatDateKey(new Date(currentDate.getFullYear(), currentDate.getMonth(), i));
+
+            const isToday = formatDateKey(new Date()) === dateKey;
+            const isSelected = selectedDate && formatDateKey(selectedDate) === dateKey;
+            
             // Check if this day is today
             if (
                 currentDate.getFullYear() === today.getFullYear() &&
@@ -144,10 +152,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 dayElement.classList.add('selected');
             }
             
+            // Check if this day is a holiday
+            if (holidays[dateKey]) {
+                dayElement.classList.add('holiday');
+                
+                // Add holiday indicator dot
+                const holidayDot = document.createElement('div');
+                holidayDot.classList.add('holiday-indicator');
+                dayElement.appendChild(holidayDot);
+            }
+            
             // Check if this day has tasks
-            const dateKey = formatDateKey(
-                new Date(currentDate.getFullYear(), currentDate.getMonth(), i)
-            );
             if (tasks[dateKey] && tasks[dateKey].length > 0) {
                 dayElement.classList.add('has-tasks');
             }
@@ -221,15 +236,32 @@ document.addEventListener('DOMContentLoaded', function() {
         renderCalendar();
     }
     
+    function toggleHoliday() {
+        if (!selectedDate) return;
+        
+        const dateKey = formatDateKey(selectedDate);
+        
+        if (holidays[dateKey]) {
+            delete holidays[dateKey];
+        } else {
+            holidays[dateKey] = true;
+        }
+        
+        saveTasks();
+        renderCalendar();
+    }
+    
     // Task functions
     function updateSelectedDate(date) {
-        selectedDate = date;
+        // Create new date without time components
+        selectedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
         selectedDateEl.textContent = new Intl.DateTimeFormat('en-US', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
-            day: 'numeric'
-        }).format(date);
+            day: 'numeric',
+            timeZone: 'Asia/Kolkata'
+        }).format(selectedDate);
         renderTasks();
     }
     
@@ -436,7 +468,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function moveTaskToDate(taskIndex, newDate) {
         const oldDateKey = formatDateKey(selectedDate);
-        const newDateKey = formatDateKey(newDate);
+        const newDateKey = formatDateKey(new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate()));
         
         if (!tasks[oldDateKey] || !tasks[oldDateKey][taskIndex]) return;
         
@@ -495,7 +527,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Helper functions
     function formatDateKey(date) {
-        return date.toISOString().split('T')[0];
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     }
     
     function isURL(str) {
@@ -517,6 +552,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function saveTasks() {
         localStorage.setItem('tasks', JSON.stringify(tasks));
+        localStorage.setItem('holidays', JSON.stringify(holidays));
     }
     
     // Initialize the app

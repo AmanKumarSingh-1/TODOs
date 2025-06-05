@@ -29,7 +29,10 @@
 
             <div class="tasks-container">
                 <div class="tasks-header">
-                    <h3 id="selected-date">Select a date</h3>
+                    <div style="display: flex;">
+                        <h3 id="selected-date">Select a date</h3>
+                        <button id="toggle-holiday" title="Mark selected date as holiday"><i class="fas fa-umbrella-beach"></i></button>
+                    </div>
                     <div class="task-input-container">
                         <input type="text" id="task-input" placeholder="Add a new task...">
                         <button id="add-task-btn"><i class="fas fa-plus"></i></button>
