@@ -141,15 +141,6 @@ body {
     text-underline-offset: 4px;
 }
 
-.holiday-indicator {
-    position: absolute;
-    bottom: 10px;
-    width: 6px;
-    height: 6px;
-    background-color: none;
-    border-radius: 50%;
-}
-
 .calendar-day.has-tasks::after {
     content: '';
     position: absolute;
